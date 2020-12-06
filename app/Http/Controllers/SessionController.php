@@ -28,6 +28,22 @@ class SessionController extends Controller
 
     public function create(Request $request){
         // dd($request->json()->all()['name']);
+
+        $validator = \Validator::make($request->all(),  [
+            'userID' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'start' => 'required',
+            'duration' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status'=>"Error Request",
+                'error' => $validator->messages()
+            ],422) ;
+        }
+
         if (!User::where('id', '=', $request->userID)->exists()) {
             return response([
                 'status' => 'Not Found',
