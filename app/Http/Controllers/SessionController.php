@@ -12,7 +12,10 @@ class SessionController extends Controller
     //
 
     public function list(){
-        return response()->json(Session::all(), 200);
+        return response([
+            'status'=> 'OK',
+            'data'=> Session::all()
+        ], 200);
     }
 
     public function detail($id_session){
@@ -23,7 +26,10 @@ class SessionController extends Controller
                 'message' => "Data Not Found"
             ], 404);
         }
-        return response()->json(Session::find($id_session), 200);
+        return response([
+            'status'=> 'OK',
+            'data'=> $check
+        ], 200);
     }
 
     public function create(Request $request){

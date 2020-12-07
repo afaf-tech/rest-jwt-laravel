@@ -19,21 +19,29 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-    // Route::auth();
-    Route::post('register', 'UserController@register');
-    Route::post('login', 'UserController@login');
+Route::post('register', 'UserController@register');
+Route::post('login', 'UserController@login');
 
-    Route::get('user', 'UserController@getAuthenticatedUser')->middleware('jwt.verify');
-    Route::get('logout', 'UserController@logout')->middleware('jwt.verify');
-    Route::get('refresh', 'UserController@refresh')->middleware('jwt.verify'); // refresh token
+Route::middleware(['log.route', 'jwt.verify'])->group(function () {
+    // Route::auth();
+    Route::get('user', 'UserController@getAuthenticatedUser');
+    Route::get('logout', 'UserController@logout');
+    Route::get('refresh', 'UserController@refresh'); // refresh token
 
     Route::get('book', 'TrialController@book');
-    Route::get('bookall', 'TrialController@bookAuth')->middleware('jwt.verify');
+    Route::get('bookall', 'TrialController@bookAuth');
 
     Route::group(['prefix' => 'session'], function () {
         Route::get('list', 'SessionController@list');
         Route::get('detail/{id_session}', 'SessionController@detail');
-        Route::post('create', 'SessionController@create')->middleware('jwt.verify');
-        Route::put('update/{id_session}', 'SessionController@update')->middleware('jwt.verify');
-        Route::delete('delete/{id_session}', 'SessionController@delete')->middleware('jwt.verify');
+        Route::post('create', 'SessionController@create');
+        Route::put('update/{id_session}', 'SessionController@update');
+        Route::delete('delete/{id_session}', 'SessionController@delete');
     });
+
+});
+
+Route::group(['prefix' => 'session'], function () {
+    Route::get('list', 'SessionController@list');
+    Route::get('detail/{id_session}', 'SessionController@detail');
+});
